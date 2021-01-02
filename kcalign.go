@@ -31,11 +31,19 @@ type Formatter struct {
 
 // Format writes formatted data by defined alignment.
 func (f *Formatter) Format(w io.Writer, data []string) error {
+	return f.FormatIndent(w, 0, data)
+}
+
+// Format writes formatted data by defined alignment with indent.
+func (f *Formatter) FormatIndent(w io.Writer, indent int, data []string) error {
 	var lnum = 0
 	for len(data) > 0 {
 		a := f.align(lnum)
 		if len(data) < a.Num {
 			return fmt.Errorf("less data, want %d got %d at line %d", a.Num, len(data), lnum+1)
+		}
+		if indent > 0 {
+			f.writePadding(w, indent)
 		}
 		last := len(data) == a.Num
 		err := f.format(w, a, data[0:a.Num], last)
