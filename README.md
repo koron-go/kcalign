@@ -6,3 +6,18 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/koron-go/kcalign)](https://goreportcard.com/report/github.com/koron-go/kcalign)
 
 Key code alignment library.  Designed to use with QMK keymap.json.
+
+## keymapfmt
+
+kcalign includes a tool called keymapfmt. it formats `"layers"` property in QMK
+keymap.json with layout which affected its phisical key alignments.
+
+Currently it supports crkbd's layout only.
+
+### How to get keymapfmt
+
+```console
+$ go install github.com/koron-go/kcalign/cmd/keymapfmt
+```
+
+TO BE WRITTEN...
