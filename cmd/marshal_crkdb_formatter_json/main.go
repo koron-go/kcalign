@@ -18,9 +18,10 @@ func main() {
 
 func crkbdFormat(ta kcalign.TextAlign) *kcalign.Formatter {
 	return &kcalign.Formatter{
+		Desc:  "crkbd layout",
 		Width: 10,
 		Span:  0,
-		//Quote: None,
+		//Quote: kcalign.Double,
 		Align: kcalign.RowAlign{
 			Num:       12,
 			TextAlign: ta,
@@ -61,16 +62,8 @@ func run() error {
 	default:
 	}
 
-	var data []string
-	err := json.NewDecoder(os.Stdin).Decode(&data)
-	if err != nil {
-		return err
-	}
 	f := crkbdFormat(ta)
-	err = f.Format(os.Stdout, data)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	return enc.Encode(f)
 }

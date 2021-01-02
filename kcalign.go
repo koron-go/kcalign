@@ -7,74 +7,26 @@ import (
 	"strings"
 )
 
-// TextAlign specifies text alignment in column.
-type TextAlign int
-
-const (
-	// Left is left alignment.
-	Left TextAlign = iota
-	// Right is right alignment.
-	Right
-	// Center is center alignment.
-	Center
-)
-
-// QuoteType specifies runes to quote each items.
-type QuoteType int
-
-const (
-	// Double uses dobule quote (`"`).
-	Double QuoteType = iota
-	// NoQuote doesn't use quote runes, write each items as is.
-	NoQuote
-)
-
-// Align defines alignment property for each rows.
-type Align struct {
-	// Number of columns.
-	Num int
-
-	// Indent is left indent.
-	Indent int
-
-	// TextAlign is default alignment of coloumn.
-	TextAlign TextAlign
-
-	// ExMargin extends merge between columns.
-	ExMargin map[int]int
-
-	// ExWidth extends column width by position.
-	ExWidth map[int]int
-
-	// ExTextAligns extedns text alignment of columns.
-	ExTextAligns map[int]TextAlign
-}
-
-func (a Align) textAlign(n int) TextAlign {
-	ta, ok := a.ExTextAligns[n]
-	if ok {
-		return ta
-	}
-	return a.TextAlign
-}
-
 // Formatter provides format strign array, with alignment like key board.
 type Formatter struct {
+	// Desc is description of this formatter.
+	Desc string `json:"desc,omitempty"`
+
 	// Width is width of a column. Two double quotes are included in count.
 	// Minimal is 3, default is 10.
-	Width int
+	Width int `json:"width"`
 
 	// Span is number of white spaces between columns. Minimal is 0.
-	Span int
+	Span int `json:"span,omitempty"`
 
 	// Quote is quote type for each data.
-	Quote QuoteType
+	Quote QuoteType `json:"quote,omitempty"`
 
 	// Align is default alignment.
-	Align Align
+	Align RowAlign `json:"align"`
 
 	// ExAligns is exceptional alignments per lines.
-	ExAligns map[int]Align
+	ExAligns map[int]RowAlign `json:"ex_aligns,omitempty"`
 }
 
 // Format writes formatted data by defined alignment.
@@ -97,7 +49,7 @@ func (f *Formatter) Format(w io.Writer, data []string) error {
 }
 
 // align gets an Align for a N'th row.
-func (f *Formatter) align(n int) Align {
+func (f *Formatter) align(n int) RowAlign {
 	a, ok := f.ExAligns[n]
 	if ok {
 		return a
@@ -134,8 +86,8 @@ func (f *Formatter) quoteString(s string) string {
 }
 
 // columnWidth calculate column width requirement.
-func (f *Formatter) columnWidth(a Align, n int) int {
-	w, ok := a.ExWidth[n]
+func (f *Formatter) columnWidth(a RowAlign, n int) int {
+	w, ok := a.ExWidths[n]
 	if ok {
 		return w
 	}
@@ -148,6 +100,8 @@ func (f *Formatter) columnWidth(a Align, n int) int {
 // columnPadding calculates paddings for a column.
 func (f *Formatter) columnPadding(ta TextAlign, columnWidth int, s string) (left, right int) {
 	switch ta {
+	default:
+		fallthrough
 	case Left:
 		right = columnWidth - len(s)
 		if right < 0 {
@@ -196,7 +150,7 @@ func (f *Formatter) formatColumn(w io.Writer, s string, left, right int, lastCol
 	return nil
 }
 
-func (f *Formatter) format(w io.Writer, a Align, data []string, lastRow bool) error {
+func (f *Formatter) format(w io.Writer, a RowAlign, data []string, lastRow bool) error {
 	if a.Indent > 0 {
 		err := f.writePadding(w, a.Indent)
 		if err != nil {
@@ -205,7 +159,7 @@ func (f *Formatter) format(w io.Writer, a Align, data []string, lastRow bool) er
 	}
 	for i, d := range data {
 		lastCol := lastRow && i+1 >= len(data)
-		m, ok := a.ExMargin[i]
+		m, ok := a.ExMargins[i]
 		if ok && m > 0 {
 			if err := f.writePadding(w, m); err != nil {
 				return err
