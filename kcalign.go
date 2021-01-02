@@ -96,6 +96,7 @@ func (f *Formatter) Format(w io.Writer, data []string) error {
 	return nil
 }
 
+// align gets an Align for a N'th row.
 func (f *Formatter) align(n int) Align {
 	a, ok := f.ExAligns[n]
 	if ok {
@@ -104,30 +105,20 @@ func (f *Formatter) align(n int) Align {
 	return f.Align
 }
 
-func (f *Formatter) width() int {
-	if f.Width < 3 {
-		return 10
-	}
-	return f.Width
-}
+const paddingStr = "                                                  "
 
-const padding = "                                                  "
-
-func (f *Formatter) padding(n int) string {
-	if n == 0 {
-		return ""
-	}
-	if n <= len(padding) {
-		return padding[:n]
-	}
-	return strings.Repeat(" ", n)
-}
-
+// writePadding writes white spaces as padding.
 func (f *Formatter) writePadding(w io.Writer, n int) error {
 	if n == 0 {
 		return nil
 	}
-	_, err := io.WriteString(w, f.padding(n))
+	var s string
+	if n <= len(paddingStr) {
+		s = paddingStr[:n]
+	} else {
+		s = strings.Repeat(" ", n)
+	}
+	_, err := io.WriteString(w, s)
 	return err
 }
 
@@ -142,9 +133,70 @@ func (f *Formatter) quoteString(s string) string {
 	}
 }
 
+// columnWidth calculate column width requirement.
+func (f *Formatter) columnWidth(a Align, n int) int {
+	w, ok := a.ExWidth[n]
+	if ok {
+		return w
+	}
+	if f.Width < 3 {
+		return 10
+	}
+	return f.Width
+}
 
-func (f *Formatter) format(w io.Writer, a Align, data []string, last bool) error {
-	cwdefault := f.width()
+// columnPadding calculates paddings for a column.
+func (f *Formatter) columnPadding(ta TextAlign, columnWidth int, s string) (left, right int) {
+	switch ta {
+	case Left:
+		right = columnWidth - len(s)
+		if right < 0 {
+			right = 0
+		}
+	case Right:
+		left = columnWidth - len(s)
+		if left < 0 {
+			left = 0
+		}
+	case Center:
+		left = (columnWidth - len(s)) / 2
+		if left < 0 {
+			left = 0
+		}
+		right = columnWidth - len(s) - left
+		if right < 0 {
+			right = 0
+		}
+	}
+	return left, right
+}
+
+// formatColumn format/output contents, paddings, and separator of a column.
+func (f *Formatter) formatColumn(w io.Writer, s string, left, right int, lastCol bool) error {
+	// write left padding.
+	if err := f.writePadding(w, left); err != nil {
+		return err
+	}
+	// write data.
+	_, err := io.WriteString(w, s)
+	if err != nil {
+		return err
+	}
+	// write right padding.
+	if err := f.writePadding(w, right); err != nil {
+		return err
+	}
+	// tail comma.
+	if !lastCol {
+		const comma = ","
+		if _, err := io.WriteString(w, comma); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (f *Formatter) format(w io.Writer, a Align, data []string, lastRow bool) error {
 	if a.Indent > 0 {
 		err := f.writePadding(w, a.Indent)
 		if err != nil {
@@ -152,70 +204,23 @@ func (f *Formatter) format(w io.Writer, a Align, data []string, last bool) error
 		}
 	}
 	for i, d := range data {
+		lastCol := lastRow && i+1 >= len(data)
 		m, ok := a.ExMargin[i]
 		if ok && m > 0 {
-			err := f.writePadding(w, m)
-			if err != nil {
+			if err := f.writePadding(w, m); err != nil {
 				return err
 			}
 		}
-		cw, ok := a.ExWidth[i]
-		if !ok {
-			cw = cwdefault
-		}
+		cw := f.columnWidth(a, i)
 		s := f.quoteString(d)
 		// calculate indents on left and right.
-		var pl, pr int
-		switch a.textAlign(i) {
-		case Left:
-			pr = cw - len(s)
-			if pr < 0 {
-				pr = 0
-			}
-		case Right:
-			pl = cw - len(s)
-			if pl < 0 {
-				pl = 0
-			}
-		case Center:
-			pl = (cw - len(s)) / 2
-			if pl < 0 {
-				pl = 0
-			}
-			pr = cw - len(s) - pl
-			if pr < 0 {
-				pr = 0
-			}
+		padL, padR := f.columnPadding(a.textAlign(i), cw, s)
+		if lastCol {
+			padR = 0
 		}
-		if last && i+1 >= len(data) {
-			pr = 0
-		}
-		// write left indent.
-		if pl > 0 {
-			_, err := io.WriteString(w, f.padding(pl))
-			if err != nil {
-				return err
-			}
-		}
-		// write data.
-		_, err := io.WriteString(w, s)
-		if err != nil {
+		// write left padding.
+		if err := f.formatColumn(w, s, padL, padR, lastCol); err != nil {
 			return err
-		}
-		// write right indent.
-		if pr > 0 {
-			_, err := io.WriteString(w, f.padding(pr))
-			if err != nil {
-				return err
-			}
-		}
-		// tail comma.
-		if !last || i+1 < len(data) {
-			const comma = ","
-			_, err := io.WriteString(w, comma)
-			if err != nil {
-				return err
-			}
 		}
 	}
 	_, err := io.WriteString(w, "\n")
