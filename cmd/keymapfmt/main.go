@@ -6,6 +6,7 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -15,13 +16,58 @@ import (
 )
 
 func main() {
-	var layerFormat string
-	flag.StringVar(&layerFormat, "format", "@crkbd", `layer format`)
-	flag.Parse()
-	err := formatKeymap(os.Stdout, os.Stdin, layerFormat)
-	if err != nil {
+	if err := run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func run() error {
+	var layerFormat string
+	var inPlace bool
+	flag.StringVar(&layerFormat, "format", "@crkbd", `layer format`)
+	flag.BoolVar(&inPlace, "inplace", false, `rewrite JSON files in place`)
+	flag.Parse()
+
+	if flag.NArg() == 0 {
+		if inPlace {
+			log.Printf("ignore -inplace when read stdin")
+		}
+		return formatKeymap(os.Stdout, os.Stdin, layerFormat)
+	}
+
+	// mode: not in place
+	if !inPlace {
+		for _, in := range flag.Args() {
+			f, err := os.Open(in)
+			if err != nil {
+				return err
+			}
+			err = formatKeymap(os.Stdout, f, layerFormat)
+			f.Close()
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	for _, inOut := range flag.Args() {
+		f, err := os.Open(inOut)
+		if err != nil {
+			return err
+		}
+		bb := &bytes.Buffer{}
+		err = formatKeymap(bb, f, layerFormat)
+		f.Close()
+		if err != nil {
+			return err
+		}
+		err = ioutil.WriteFile(inOut, bb.Bytes(), 0666)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func formatKeymap(w io.Writer, r io.Reader, layerFormat string) error {

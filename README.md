@@ -26,8 +26,10 @@ $ go install github.com/koron-go/kcalign/cmd/keymapfmt
 
 ### keymapfmt: How to use
 
+Most simple usage is reading from STDIN, writing to STDOUT.
+
 ```
-keymapfmt -format {format} < in.json > out.json
+keymapfmt [-format {format}] < in.json > out.json
 ```
 
 Where `{format}` accepts two types. First type is file name, it read
@@ -39,3 +41,14 @@ Second type is pre-defined formats. It is form of `@{name}` or
 `@{name}:{param}`. Currently, keymapfmt includes these pre-defined formats:
 
 * `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no parameter support.
+
+Extended usage is reading from file.
+
+```
+keymapfmt [-format {format}] [-inplace] {files...}
+```
+
+In this form, keymapfmt read JSON from `{files...}` and write all to STDOUT.
+
+When `-inplace` option given, keymapfmt replaces contents of each `{files...}`
+in place.
