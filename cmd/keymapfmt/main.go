@@ -60,14 +60,14 @@ func formatKeymap(w io.Writer, r io.Reader) error {
 	// FIXME: make replacable
 	f := crkbdFormat(kcalign.Right)
 
-	err = PrettyKeymapJSON(w, f, km)
+	err = prettyKeymapJSON(w, f, km)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func PrettyKeymapJSON(w io.Writer, f *kcalign.Formatter, km *qmkjson.Keymap) error {
+func prettyKeymapJSON(w io.Writer, f *kcalign.Formatter, km *qmkjson.Keymap) error {
 	bb := &bytes.Buffer{}
 	enc := json.NewEncoder(bb)
 	enc.SetIndent("", "  ")

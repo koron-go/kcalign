@@ -34,7 +34,7 @@ func (f *Formatter) Format(w io.Writer, data []string) error {
 	return f.FormatIndent(w, 0, data)
 }
 
-// Format writes formatted data by defined alignment with indent.
+// FormatIndent writes formatted data by defined alignment with indent.
 func (f *Formatter) FormatIndent(w io.Writer, indent int, data []string) error {
 	var lnum = 0
 	for len(data) > 0 {
