@@ -76,14 +76,14 @@ func Test_crkbd(t *testing.T) {
 	data := loadItems(t, "testdata/crkbd.json")
 
 	f1 := format1(Left)
-	want1 := loadString(t, "testdata/crkbd_left.txt")
+	want1 := loadString(t, "testdata/crkbd_left.want")
 	formatCheck(t, data, f1, want1)
 
 	f2 := format1(Right)
-	want2 := loadString(t, "testdata/crkbd_right.txt")
+	want2 := loadString(t, "testdata/crkbd_right.want")
 	formatCheck(t, data, f2, want2)
 
 	f3 := format1(Center)
-	want3 := loadString(t, "testdata/crkbd_center.txt")
+	want3 := loadString(t, "testdata/crkbd_center.want")
 	formatCheck(t, data, f3, want3)
 }
