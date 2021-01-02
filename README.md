@@ -10,13 +10,13 @@ Key code alignment library.  Designed to use with QMK keymap.json.
 ## keymapfmt - A tool to format QMK's keymap.json
 
 kcalign includes a tool called keymapfmt. it formats `"layers"` property in QMK
-keymap.json with layout which affected its phisical key alignments.
+keymap.json with layout which affected its physical key alignments.
 
 Samples:
 
 * for crkbd
     * [Input JSON](./cmd/keymapfmt/testdata/crkbd_in.json)
-    * [Resuolt JSON](./cmd/keymapfmt/testdata/crkbd_out.json)
+    * [Result JSON](./cmd/keymapfmt/testdata/crkbd_out.json)
 
 ### keymapfmt: How to install
 
