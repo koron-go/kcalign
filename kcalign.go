@@ -12,8 +12,8 @@ type Formatter struct {
 	// Desc is description of this formatter.
 	Desc string `json:"desc,omitempty"`
 
-	// Width is width of a column. Two double quotes are included in count.
-	// Minimal is 3, default is 10.
+	// Width is width of a column. Quote characters are included in count.
+	// Valid minimal is 3, default/fall back is 10.
 	Width int `json:"width"`
 
 	// Span is number of white spaces between columns. Minimal is 0.

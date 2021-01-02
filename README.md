@@ -7,17 +7,31 @@
 
 Key code alignment library.  Designed to use with QMK keymap.json.
 
-## keymapfmt
+## keymapfmt - A tool to format QMK's keymap.json
 
 kcalign includes a tool called keymapfmt. it formats `"layers"` property in QMK
 keymap.json with layout which affected its phisical key alignments.
 
 Currently it supports crkbd's layout only.
 
-### How to get keymapfmt
+### keymapfmt: How to install
 
 ```console
 $ go install github.com/koron-go/kcalign/cmd/keymapfmt
 ```
+
+### keymapfmt: How to use
+
+```
+keymapfmt -format {format} < in.json > out.json
+```
+
+Where `{format}` accepts two types. First type is file name, it read
+formatter.json from the file. See [formatter.schema.json](formatter.schema.json) and `kcalign` code for its schema.
+
+Second type is pre-defined formats. It is form of `@{name}` or
+`@{name}:{param}`. Currently, keymapfmt bundles these pre-defined formats:
+
+* `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no parameters.
 
 TO BE WRITTEN...

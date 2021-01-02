@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"flag"
 	"io"
 	"log"
 	"os"
@@ -14,52 +15,25 @@ import (
 )
 
 func main() {
-	err := formatKeymap(os.Stdout, os.Stdin)
+	var layerFormat string
+	flag.StringVar(&layerFormat, "format", "@crkbd", `layer format`)
+	flag.Parse()
+	err := formatKeymap(os.Stdout, os.Stdin, layerFormat)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func crkbdFormat(ta kcalign.TextAlign) *kcalign.Formatter {
-	return &kcalign.Formatter{
-		Desc:  "crkbd layout",
-		Width: 10,
-		Span:  0,
-		//Quote: kcalign.Double,
-		Align: kcalign.RowAlign{
-			Num:       12,
-			TextAlign: ta,
-			ExMargins: map[int]int{
-				6: 34,
-			},
-		},
-		ExAligns: map[int]kcalign.RowAlign{
-			3: {
-				Num:       6,
-				Indent:    44,
-				TextAlign: ta,
-				ExWidths: map[int]int{
-					2: 15,
-					3: 15,
-				},
-				ExMargins: map[int]int{
-					3: 2,
-				},
-			},
-		},
-	}
-}
-
-func formatKeymap(w io.Writer, r io.Reader) error {
-	var km *qmkjson.Keymap
-	err := json.NewDecoder(r).Decode(&km)
+func formatKeymap(w io.Writer, r io.Reader, layerFormat string) error {
+	f, err := loadFormat(layerFormat)
 	if err != nil {
 		return err
 	}
-
-	// FIXME: make replacable
-	f := crkbdFormat(kcalign.Right)
-
+	var km *qmkjson.Keymap
+	err = json.NewDecoder(r).Decode(&km)
+	if err != nil {
+		return err
+	}
 	err = prettyKeymapJSON(w, f, km)
 	if err != nil {
 		return err

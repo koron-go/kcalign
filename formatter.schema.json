@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema#",
+  "title": "Schema for formatter.json",
+
+  "definitions": {
+
+    "Formattter": {
+      "type": "object",
+      "properties": {
+        "desc": {
+          "type": "string",
+          "description": "description of this formatter"
+        },
+        "width": {
+          "type": "integer",
+          "description": "width of a coloumn. Quote chacters are included in count. Valid minimal is 3, default/fall back is 10",
+          "minimum": 0
+        },
+        "span": {
+          "type": "integer",
+          "description": "number of white spaces between columns.",
+          "minimum": 0
+        },
+        "quote": {
+          "$ref": "#/definitions/QuoteType",
+          "description": "quote type/character for each items"
+        },
+        "align": {
+          "$ref": "#/definitions/RowAlign",
+          "description": "default row alignment, be applied to all rows if exceptional alignment isn't provided for the row."
+        },
+        "ex_aligns": {
+          "type": "object",
+          "description": "Exceptional alignments per rows. Key should be zero-origin row number, the align (value) will be applied.",
+          "additionalProperties": {
+            "$ref": "#/definitions/RowAlign"
+          }
+        }
+      }
+    },
+
+    "RowAlign": {
+      "type": "object",
+      "properties": {
+        "num": {
+          "type": "integer",
+          "description": "Number of columns in a row.",
+          "minimum": 0
+        },
+        "indent": {
+          "type": "integer",
+          "description": "Left indent (margin) of a row",
+          "minimum": 0
+        },
+        "text_align": {
+          "$ref": "#/definitions/TextAlign",
+          "description": "Default text alignment of each column. It can be overriden by \"ex_text_aligns\" for each rows."
+        },
+        "ex_margins": {
+          "type": "object",
+          "description": "Extra margin (num of white spaces) before each columns. Key should be zero-origin column number.",
+          "additionalProperties": {
+            "type": "integer",
+            "minimal": 0
+          }
+        },
+        "ex_widths": {
+          "type": "object",
+          "description": "Exceptional width of each columns. Key should be zero-origin column number.",
+          "additionalProperties": {
+            "type": "integer",
+            "minimal": 0
+          }
+        },
+        "ex_text_aligns": {
+          "type": "object",
+          "description": "Exceptional text align of each columns. Key should be zero-origin column number.",
+          "additionalProperties": {
+            "$ref": "#/definitions/TextAlign"
+          }
+        }
+      }
+    },
+
+    "QuoteType": {
+      "type": "string",
+      "description": "character to use for quote each items. when omit this \"double\" will be used.",
+      "default": "double",
+      "enum": [
+        "double",
+        "none"
+      ]
+    },
+
+    "TextAlign": {
+      "type": "string",
+      "description": "text alignment in column. when omit this \"left\" will be used.",
+      "default": "left",
+      "enum": [
+        "left",
+        "right",
+        "center"
+      ]
+    }
+  },
+
+  "$ref": "#/definitions/Formatter"
+}
