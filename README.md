@@ -12,7 +12,11 @@ Key code alignment library.  Designed to use with QMK keymap.json.
 kcalign includes a tool called keymapfmt. it formats `"layers"` property in QMK
 keymap.json with layout which affected its phisical key alignments.
 
-Currently it supports crkbd's layout only.
+Samples:
+
+* for crkbd
+    * [Input JSON](./cmd/keymapfmt/testdata/crkbd_in.json)
+    * [Resuolt JSON](./cmd/keymapfmt/testdata/crkbd_out.json)
 
 ### keymapfmt: How to install
 
@@ -27,11 +31,11 @@ keymapfmt -format {format} < in.json > out.json
 ```
 
 Where `{format}` accepts two types. First type is file name, it read
-formatter.json from the file. See [formatter.schema.json](formatter.schema.json) and `kcalign` code for its schema.
+formatter.json from the file.
+See [formatter.schema.json](formatter.schema.json) and `kcalign` code for
+details of its schema.
 
 Second type is pre-defined formats. It is form of `@{name}` or
-`@{name}:{param}`. Currently, keymapfmt bundles these pre-defined formats:
+`@{name}:{param}`. Currently, keymapfmt includes these pre-defined formats:
 
-* `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no parameters.
-
-TO BE WRITTEN...
+* `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no parameter support.

@@ -25,7 +25,7 @@ type Formatter struct {
 	// Align is default alignment.
 	Align RowAlign `json:"align"`
 
-	// ExAligns is exceptional alignments per lines.
+	// ExAligns is exceptional alignments per rows.
 	ExAligns map[int]RowAlign `json:"ex_aligns,omitempty"`
 }
 
