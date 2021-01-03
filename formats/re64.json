@@ -1,0 +1,77 @@
+{
+  "desc": "Re64 formatter",
+  "width": 10,
+  "align": {
+    "num": 8,
+    "text_align": "center",
+    "ex_margins": {},
+    "ex_widths": {}
+  },
+  "ex_aligns": {
+    "0": {
+      "num": 15,
+      "text_align": "center",
+      "ex_margins": {
+        "7": 44
+      },
+      "ex_widths": {}
+    },
+
+    "1": {
+      "num": 14,
+      "text_align": "center",
+      "ex_margins": {
+        "6": 42
+      },
+      "ex_widths": {
+        "0": 17,
+        "13": 16
+      }
+    },
+
+    "2": {
+      "num": 13,
+      "text_align": "center",
+      "ex_margins": {
+        "6": 41
+      },
+      "ex_widths": {
+        "0": 20,
+        "12": 25
+      }
+    },
+
+    "3": {
+      "num": 13,
+      "text_align": "center",
+      "ex_margins": {
+        "6": 42
+      },
+      "ex_widths": {
+        "0": 24,
+        "11": 20
+      }
+    },
+
+    "4": {
+      "num": 11,
+      "text_align": "center",
+      "ex_margins": {
+        "3": 10,
+        "6": 2,
+        "9": 10
+      },
+      "ex_widths": {
+        "0": 15,
+        "2": 15,
+        "3": 12,
+        "4": 13,
+        "5": 16,
+        "6": 16,
+        "7": 13,
+        "8": 12,
+        "9": 15
+      }
+    }
+  }
+}

@@ -34,13 +34,14 @@ keymapfmt [-format {format}] < in.json > out.json
 
 Where `{format}` accepts two types. First type is file name, it read
 formatter.json from the file.
-See [formatter.schema.json](formatter.schema.json) and `kcalign` code for
+See [formats/\_schema\_.json](formats/_schema_.json) and `kcalign` code for
 details of its schema.
 
 Second type is pre-defined formats. It is form of `@{name}` or
 `@{name}:{param}`. Currently, keymapfmt includes these pre-defined formats:
 
-* `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no parameter support.
+* `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no `{param}` support.
+* `@re64` - [Re64](). no `{param}` support.
 
 Extended usage is reading from file.
 

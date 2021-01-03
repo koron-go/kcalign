@@ -11,6 +11,7 @@ import (
 
 var formats = map[string]func(string) *kcalign.Formatter{
 	"@crkbd": newFormatterCrkbd,
+	"@re64":  newFormatterRe64,
 }
 
 func loadFormat(name string) (*kcalign.Formatter, error) {
