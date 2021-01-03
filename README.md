@@ -41,7 +41,7 @@ Second type is pre-defined formats. It is form of `@{name}` or
 `@{name}:{param}`. Currently, keymapfmt includes these pre-defined formats:
 
 * `@crkbd` - [crkbd](https://github.com/foostan/crkbd/). no `{param}` support.
-* `@re64` - [Re64](). no `{param}` support.
+* `@re64` - [Re64](https://github.com/kushima8/Re#re64). no `{param}` support.
 
 Extended usage is reading from file.
 
