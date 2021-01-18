@@ -91,17 +91,6 @@ func formatKeymap(w io.Writer, r io.Reader, layerFormat string) error {
 	return nil
 }
 
-// detect layer format from qmkjson.Keymap.
-func detectLayerFormat(km *qmkjson.Keymap) string {
-	if strings.HasPrefix(km.Keyboard, "crkbd") {
-		return "@crkbd"
-	}
-	if strings.HasPrefix(km.Keyboard, "re64") {
-		return "@re64"
-	}
-	return defaultLayerFormat
-}
-
 func prettyKeymapJSON(w io.Writer, f *kcalign.Formatter, km *qmkjson.Keymap) error {
 	bb := &bytes.Buffer{}
 	enc := json.NewEncoder(bb)

@@ -7,15 +7,28 @@ import (
 	"strings"
 
 	"github.com/koron-go/kcalign"
+	"github.com/koron-go/kcalign/internal/qmkjson"
 )
 
+const defaultLayerFormat = "@oneitem"
+
 var formats = map[string]func(string) *kcalign.Formatter{
-	"@oneitem": newFormatterOneitem,
-	"@crkbd":   newFormatterCrkbd,
-	"@re64":    newFormatterRe64,
+	"@crkbd":             newFormatterCrkbd,
+	"@oneitem":           newFormatterOneitem,
+	"@re64":              newFormatterRe64,
+	"@dztech/dz60rgb/v2": newFormatterDz60RgbV2,
 }
 
-const defaultLayerFormat = "@oneitem"
+// detect layer format from qmkjson.Keymap.
+func detectLayerFormat(km *qmkjson.Keymap) string {
+	// FIXME: add custom detection algorithms at here.
+	for k := range formats {
+		if strings.HasPrefix(km.Keyboard, k[1:]) {
+			return k
+		}
+	}
+	return defaultLayerFormat
+}
 
 func loadFormat(name string) (*kcalign.Formatter, error) {
 	if name == "" {
