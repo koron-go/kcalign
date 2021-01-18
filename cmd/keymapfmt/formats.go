@@ -10,9 +10,12 @@ import (
 )
 
 var formats = map[string]func(string) *kcalign.Formatter{
-	"@crkbd": newFormatterCrkbd,
-	"@re64":  newFormatterRe64,
+	"@oneitem": newFormatterOneitem,
+	"@crkbd":   newFormatterCrkbd,
+	"@re64":    newFormatterRe64,
 }
+
+const defaultLayerFormat = "@oneitem"
 
 func loadFormat(name string) (*kcalign.Formatter, error) {
 	if name == "" {

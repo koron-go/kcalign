@@ -24,7 +24,7 @@ func main() {
 func run() error {
 	var layerFormat string
 	var inPlace bool
-	flag.StringVar(&layerFormat, "format", "@crkbd", `layer format`)
+	flag.StringVar(&layerFormat, "format", "", `layer format (default: auto detect)`)
 	flag.BoolVar(&inPlace, "inplace", false, `rewrite JSON files in place`)
 	flag.Parse()
 
@@ -71,12 +71,16 @@ func run() error {
 }
 
 func formatKeymap(w io.Writer, r io.Reader, layerFormat string) error {
-	f, err := loadFormat(layerFormat)
+	var km *qmkjson.Keymap
+	err := json.NewDecoder(r).Decode(&km)
 	if err != nil {
 		return err
 	}
-	var km *qmkjson.Keymap
-	err = json.NewDecoder(r).Decode(&km)
+	// detect layer format.
+	if layerFormat == "" {
+		layerFormat = detectLayerFormat(km)
+	}
+	f, err := loadFormat(layerFormat)
 	if err != nil {
 		return err
 	}
@@ -85,6 +89,17 @@ func formatKeymap(w io.Writer, r io.Reader, layerFormat string) error {
 		return err
 	}
 	return nil
+}
+
+// detect layer format from qmkjson.Keymap.
+func detectLayerFormat(km *qmkjson.Keymap) string {
+	if strings.HasPrefix(km.Keyboard, "crkbd") {
+		return "@crkbd"
+	}
+	if strings.HasPrefix(km.Keyboard, "re64") {
+		return "@re64"
+	}
+	return defaultLayerFormat
 }
 
 func prettyKeymapJSON(w io.Writer, f *kcalign.Formatter, km *qmkjson.Keymap) error {
