@@ -2,9 +2,9 @@ package main
 
 import "github.com/koron-go/kcalign"
 
-func newFormatterDz60RgbV2(param string) *kcalign.Formatter {
+func newFormatterDz60Rgb(param string) *kcalign.Formatter {
 	return &kcalign.Formatter{
-		Desc:  "DZ60 RGB V2 formatter",
+		Desc:  "DZ60RGB formatter",
 		Width: 10,
 
 		Align: kcalign.RowAlign{

@@ -13,10 +13,12 @@ import (
 const defaultLayerFormat = "@oneitem"
 
 var formats = map[string]func(string) *kcalign.Formatter{
-	"@crkbd":             newFormatterCrkbd,
-	"@oneitem":           newFormatterOneitem,
-	"@re64":              newFormatterRe64,
-	"@dztech/dz60rgb/v2": newFormatterDz60RgbV2,
+	"@crkbd":   newFormatterCrkbd,
+	"@oneitem": newFormatterOneitem,
+	"@re64":    newFormatterRe64,
+
+	// DZ60 RGB V1/V2, both supported
+	"@dztech/dz60rgb": newFormatterDz60Rgb,
 }
 
 // detect layer format from qmkjson.Keymap.
