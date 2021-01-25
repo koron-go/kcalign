@@ -14,11 +14,11 @@ func main() {
 		log.Fatal(err)
 	}
 	keys := l.Keys().SortByCenter()
-	//e := json.NewEncoder(os.Stdout)
-	//e.SetIndent("", "  ")
-	//e.Encode(keys)
 	const unit = 19.05
 	for i, k := range keys {
-		fmt.Printf("SW%d\t%f\t%f\n", i+1, k.CX*unit, k.CY*unit)
+		x , y:= k.CX*unit, k.CY*unit
+		fmt.Printf("SW%d\t%f\t%f\n", i+1, x, y)
+		fmt.Printf("D%d\t%f\t%f\n", i+1, x, y + 8.33)
+		fmt.Printf("LED%d\t%f\t%f\n", i+1, x, y - 4.76)
 	}
 }
