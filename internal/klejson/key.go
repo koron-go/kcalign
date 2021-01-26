@@ -27,18 +27,16 @@ type Keys []Key
 
 func (keys Keys) SortByCenter() Keys {
 	sort.SliceStable(keys, func(i, j int) bool {
-		if keys[i].X < keys[j].X {
+		if keys[i].CX < keys[j].CX {
 			return true
 		}
-		if keys[i].X > keys[j].X {
+		if keys[i].CX > keys[j].CX {
 			return false
 		}
-		if keys[i].Y < keys[j].Y {
+		if keys[i].CY < keys[j].CY {
 			return true
 		}
 		return i < j
 	})
-
-	// TODO:
 	return keys
 }
