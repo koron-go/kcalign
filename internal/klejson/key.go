@@ -25,7 +25,7 @@ func newKey(x, y, w, h float64) Key {
 
 type Keys []Key
 
-func (keys Keys) SortByCenter() Keys {
+func (keys Keys) SortByColRow() Keys {
 	sort.SliceStable(keys, func(i, j int) bool {
 		if keys[i].CX < keys[j].CX {
 			return true
@@ -34,6 +34,22 @@ func (keys Keys) SortByCenter() Keys {
 			return false
 		}
 		if keys[i].CY < keys[j].CY {
+			return true
+		}
+		return i < j
+	})
+	return keys
+}
+
+func (keys Keys) SortByRowCol() Keys {
+	sort.SliceStable(keys, func(i, j int) bool {
+		if keys[i].CY < keys[j].CY {
+			return true
+		}
+		if keys[i].CY > keys[j].CY {
+			return false
+		}
+		if keys[i].CX < keys[j].CX {
 			return true
 		}
 		return i < j
