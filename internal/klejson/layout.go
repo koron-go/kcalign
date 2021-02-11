@@ -29,7 +29,10 @@ func Parse(r io.Reader) (*Layout, error) {
 		return nil, err
 	}
 	var l Layout
-	kctx := Key{} // key context
+	kctx := Key{
+		W: 1,
+		H: 1,
+	} // key context
 	for _, v := range raw {
 		if m, ok := v.(map[string]interface{}); ok {
 			err := l.parseProps(m)
@@ -111,13 +114,13 @@ func (l *Layout) parseKeyCtx(kctx Key, m map[string]interface{}) (Key, error) {
 			if err != nil {
 				return kctx, fmt.Errorf(`"x" with invalid value: %w`, err)
 			}
-			kctx.X = x
+			kctx.X += x
 		case "y":
 			y, err := toFloat64(v)
 			if err != nil {
 				return kctx, fmt.Errorf(`"y" with invalid value: %w`, err)
 			}
-			kctx.Y = y
+			kctx.Y += y
 		case "w":
 			w, err := toFloat64(v)
 			if err != nil {

@@ -55,19 +55,26 @@ func main() {
 
 		enableDiode = false
 		offDiode    = dim{y: +8.33}
+		rotDiode    = 0.0
 
 		enableLED = false
 		offLED    = dim{y: -4.76}
+		rotLED    = 0.0
 
 		sortBy string
 	)
 	flag.Var(&origin, "origin", "the origin coordinate")
 	flag.Var(&unit, "unit", "unit dimension in millimeter")
 	flag.StringVar(&sortBy, "sort", "col,row", "sort priority \"col,row\" or \"row,col\"")
+
 	flag.BoolVar(&enableDiode, "diode", false, "output diodes")
 	flag.Var(&offDiode, "diode_offset", "diode offset")
+	flag.Float64Var(&rotDiode, "diode_rorate", 0.0, "diode rotation")
+
 	flag.BoolVar(&enableLED, "led", false, "output LEDs")
 	flag.Var(&offLED, "led_offset", "LED offset")
+	flag.Float64Var(&rotLED, "led_rotate", 0.0, "LED rotation")
+
 	flag.Parse()
 
 	var w io.Writer = os.Stdout
@@ -88,7 +95,7 @@ func main() {
 	for i, k := range keys {
 		x := k.CX*unit.x + origin.x
 		y := k.CY*unit.y + origin.y
-		fmt.Fprintf(w, "SW%d\t%f\t%f\n", i+1, x, y)
+		fmt.Fprintf(w, "SW%d\t%f\t%f\t%f\n", i+1, x, y, 0.0)
 	}
 
 	// align diodes if required
@@ -96,7 +103,7 @@ func main() {
 		for i, k := range keys {
 			x := k.CX*unit.x + offDiode.x + origin.x
 			y := k.CY*unit.y + offDiode.y + origin.y
-			fmt.Fprintf(w, "D%d\t%f\t%f\n", i+1, x, y)
+			fmt.Fprintf(w, "D%d\t%f\t%f\t%f\n", i+1, x, y, rotDiode)
 		}
 	}
 
@@ -111,7 +118,7 @@ func main() {
 				}
 				x := key.CX*unit.x + offLED.x + origin.x
 				y := key.CY*unit.y + offLED.y + origin.y
-				fmt.Fprintf(w, "LED%d\t%f\t%f\n", i+1, x, y)
+				fmt.Fprintf(w, "LED%d\t%f\t%f\t%f\n", i+1, x, y, rotLED)
 			}
 			nled += len(row)
 		}
