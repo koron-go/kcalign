@@ -1,0 +1,47 @@
+{
+  "desc": "yuiop50d formatter",
+  "width": 11,
+  "align": {
+    "num": 11,
+    "text_align": "center",
+    "ex_margins": {},
+    "ex_widths": {}
+  },
+  "ex_aligns": {
+    "0": {
+      "num": 10,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 6
+      }
+    },
+    "1": {
+      "num": 11,
+      "text_align": "center"
+    },
+    "2": {
+      "num": 11,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 3
+      }
+    },
+    "3": {
+      "num": 10,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 9
+      }
+    },
+    "4": {
+      "num": 8,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 3,
+        "1": 9,
+        "4": 6,
+        "7": 21
+      }
+    }
+  }
+}
