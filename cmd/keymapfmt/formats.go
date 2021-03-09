@@ -16,6 +16,7 @@ var formats = map[string]func(string) *kcalign.Formatter{
 	"@crkbd":   newFormatterCrkbd,
 	"@oneitem": newFormatterOneitem,
 	"@re64":    newFormatterRe64,
+	"@uzu42":   newFormatterUzu42,
 
 	// DZ60 RGB V1/V2, both supported
 	"@dztech/dz60rgb": newFormatterDz60Rgb,

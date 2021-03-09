@@ -1,0 +1,18 @@
+{
+  "desc": "uzu42 formatter",
+  "width": 11,
+  "align": {
+    "num": 10,
+    "text_align": "center",
+    "ex_margins": {
+      "5": 24
+    },
+    "ex_widths": {}
+  },
+  "ex_aligns": {
+    "3": {
+      "num": 12,
+      "text_align": "center"
+    }
+  }
+}
