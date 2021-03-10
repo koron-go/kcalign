@@ -1,0 +1,19 @@
+{
+  "desc": "yuiop22rs formatter",
+  "width": 11,
+  "align": {
+    "num": 5,
+    "text_align": "left",
+    "ex_margins": {},
+    "ex_widths": {}
+  },
+  "ex_aligns": {
+    "0": {
+      "num": 2,
+      "text_align": "left",
+      "ex_margins": {
+        "0": 36
+      }
+    }
+  }
+}
