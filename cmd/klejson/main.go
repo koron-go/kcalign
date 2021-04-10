@@ -11,11 +11,6 @@ import (
 	"github.com/koron-go/kcalign/internal/klejson"
 )
 
-var (
-	enableDiode = true
-	enableLED   = true
-)
-
 type dim struct {
 	x float64
 	y float64
@@ -53,6 +48,8 @@ func main() {
 		origin = dim{}
 		unit   = dim{x: 19.05, y: 19.05}
 
+		prefixSwitch = "SW"
+
 		enableDiode = false
 		offDiode    = dim{y: +8.33}
 		rotDiode    = 0.0
@@ -67,9 +64,11 @@ func main() {
 	flag.Var(&unit, "unit", "unit dimension in millimeter")
 	flag.StringVar(&sortBy, "sort", "col,row", "sort priority \"col,row\" or \"row,col\"")
 
+	flag.StringVar(&prefixSwitch, "prefix_switch_id", prefixSwitch, "prefix for switch annotations")
+
 	flag.BoolVar(&enableDiode, "diode", false, "output diodes")
 	flag.Var(&offDiode, "diode_offset", "diode offset")
-	flag.Float64Var(&rotDiode, "diode_rorate", 0.0, "diode rotation")
+	flag.Float64Var(&rotDiode, "diode_rotate", 0.0, "diode rotation")
 
 	flag.BoolVar(&enableLED, "led", false, "output LEDs")
 	flag.Var(&offLED, "led_offset", "LED offset")
@@ -95,7 +94,7 @@ func main() {
 	for i, k := range keys {
 		x := k.CX*unit.x + origin.x
 		y := k.CY*unit.y + origin.y
-		fmt.Fprintf(w, "SW%d\t%f\t%f\t%f\n", i+1, x, y, 0.0)
+		fmt.Fprintf(w, "%s%d\t%f\t%f\t%f\n", prefixSwitch, i+1, x, y, 0.0)
 	}
 
 	// align diodes if required
