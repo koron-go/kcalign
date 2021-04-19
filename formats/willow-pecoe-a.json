@@ -1,0 +1,45 @@
+{
+  "desc": "Willow Pecoe (side A) formatter",
+  "width": 13,
+  "align": {
+    "num": 11,
+    "text_align": "center",
+    "ex_margins": {},
+    "ex_widths": {}
+  },
+  "ex_aligns": {
+    "0": {
+      "num": 13,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 14,
+        "6": 50
+      }
+    },
+    "1": {
+      "num": 13,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 14,
+        "6": 50
+      }
+    },
+    "2": {
+      "num": 15,
+      "text_align": "center",
+      "ex_margins": {
+        "8": 22
+      }
+    },
+    "3": {
+      "num": 9,
+      "text_align": "center",
+      "ex_margins": {
+        "0": 56
+      },
+      "ex_widths": {
+        "4": 21
+      }
+    }
+  }
+}

@@ -1,5 +1,9 @@
 package main
 
+//
+// klejson: convert KLE's JSON to TSV layout information.
+//
+
 import (
 	"flag"
 	"fmt"

@@ -1,5 +1,9 @@
 package main
 
+//
+// keymapfmt: format QMK's keymap JSON file with format definition.
+//
+
 import (
 	"bytes"
 	"encoding/json"
