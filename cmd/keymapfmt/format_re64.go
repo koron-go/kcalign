@@ -81,3 +81,7 @@ func newFormatterRe64(param string) *kcalign.Formatter {
 		},
 	}
 }
+
+func init() {
+	registerFormatter("@re64", newFormatterRe64)
+}

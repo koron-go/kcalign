@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"strings"
 
@@ -12,20 +13,20 @@ import (
 
 const defaultLayerFormat = "@oneitem"
 
-var formats = map[string]func(string) *kcalign.Formatter{
-	"@crkbd":   newFormatterCrkbd,
-	"@oneitem": newFormatterOneitem,
-	"@re64":    newFormatterRe64,
-	"@uzu42":   newFormatterUzu42,
+var formatters = map[string]func(string) *kcalign.Formatter{}
 
-	// DZ60 RGB V1/V2, both supported
-	"@dztech/dz60rgb": newFormatterDz60Rgb,
+func registerFormatter(name string, factory func(string) *kcalign.Formatter) {
+	_, has := formatters[name]
+	if has {
+		panic(fmt.Sprintf("formatter for %q have been registered alreadly", name))
+	}
+	formatters[name] = factory
 }
 
 // detect layer format from qmkjson.Keymap.
 func detectLayerFormat(km *qmkjson.Keymap) string {
 	// FIXME: add custom detection algorithms at here.
-	for k := range formats {
+	for k := range formatters {
 		if strings.HasPrefix(km.Keyboard, k[1:]) {
 			return k
 		}
@@ -41,7 +42,7 @@ func loadFormat(name string) (*kcalign.Formatter, error) {
 	if n := strings.Index(name, ":"); n > 0 {
 		name, param = name[:n], name[n+1:]
 	}
-	fn, ok := formats[name]
+	fn, ok := formatters[name]
 	if ok {
 		return fn(param), nil
 	}

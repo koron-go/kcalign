@@ -17,3 +17,7 @@ func oneitemFormat(ta kcalign.TextAlign) *kcalign.Formatter {
 func newFormatterOneitem(param string) *kcalign.Formatter {
 	return oneitemFormat(kcalign.Right)
 }
+
+func init() {
+	registerFormatter("@oneitem", newFormatterOneitem)
+}

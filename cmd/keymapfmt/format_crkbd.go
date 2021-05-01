@@ -35,3 +35,7 @@ func crkbdFormat(ta kcalign.TextAlign) *kcalign.Formatter {
 func newFormatterCrkbd(param string) *kcalign.Formatter {
 	return crkbdFormat(kcalign.Right)
 }
+
+func init() {
+	registerFormatter("@crkbd", newFormatterCrkbd)
+}

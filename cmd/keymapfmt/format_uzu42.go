@@ -27,3 +27,7 @@ func uzu42Format(ta kcalign.TextAlign) *kcalign.Formatter {
 func newFormatterUzu42(param string) *kcalign.Formatter {
 	return uzu42Format(kcalign.Right)
 }
+
+func init() {
+	registerFormatter("@uzu42", newFormatterUzu42)
+}

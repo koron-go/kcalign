@@ -2,6 +2,7 @@ package main
 
 import "github.com/koron-go/kcalign"
 
+// newFormatterDz60Rgb creates a fromatter for DZ60 RGB  V1/V2 (supported both)
 func newFormatterDz60Rgb(param string) *kcalign.Formatter {
 	return &kcalign.Formatter{
 		Desc:  "DZ60RGB formatter",
@@ -61,4 +62,8 @@ func newFormatterDz60Rgb(param string) *kcalign.Formatter {
 
 		},
 	}
+}
+
+func init() {
+	registerFormatter("@dz60rgb", newFormatterDz60Rgb)
 }
