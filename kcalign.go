@@ -134,28 +134,33 @@ func (f *Formatter) columnPadding(ta TextAlign, columnWidth int, s string) (left
 }
 
 // formatColumn format/output contents, paddings, and separator of a column.
-func (f *Formatter) formatColumn(w io.Writer, s string, left, right int, lastCol bool) error {
+func (f *Formatter) formatColumn(w io.Writer, s string, left, right int, lastCol bool) (int, error) {
+	sz := 0
 	// write left padding.
 	if err := f.writePadding(w, left); err != nil {
-		return err
+		return sz, err
 	}
+	sz += left
 	// write data.
-	_, err := io.WriteString(w, s)
+	n, err := io.WriteString(w, s)
 	if err != nil {
-		return err
+		return sz, err
 	}
+	sz += n
 	// write right padding.
 	if err := f.writePadding(w, right); err != nil {
-		return err
+		return sz, err
 	}
+	sz += right
 	// tail comma.
 	if !lastCol {
 		const comma = ","
-		if _, err := io.WriteString(w, comma); err != nil {
-			return err
+		_, err := io.WriteString(w, comma)
+		if err != nil {
+			return sz, err
 		}
 	}
-	return nil
+	return sz, nil
 }
 
 func (f *Formatter) format(w io.Writer, a RowAlign, data []string, lastRow bool) error {
@@ -165,15 +170,32 @@ func (f *Formatter) format(w io.Writer, a RowAlign, data []string, lastRow bool)
 			return err
 		}
 	}
+
+	overwidth := 0
+	updateOverwidth := func(delta int) int {
+		prev := overwidth
+		overwidth += delta
+		if overwidth < 0 {
+			overwidth = 0
+		}
+		// return applied delta
+		return overwidth - prev
+	}
+
 	for i, d := range data {
 		lastCol := lastRow && i+1 >= len(data)
 		m, ok := a.ExMargins[i]
-		if ok && m > 0 {
-			if err := f.writePadding(w, m); err != nil {
-				return err
+		if ok {
+			m += updateOverwidth(-m)
+			if m > 0 {
+				err := f.writePadding(w, m)
+				if err != nil {
+					return err
+				}
 			}
 		}
 		cw := f.columnWidth(a, i)
+		cw += updateOverwidth(-cw)
 		s := f.quoteString(d)
 		// calculate indents on left and right.
 		padL, padR := f.columnPadding(a.textAlign(i), cw, s)
@@ -181,9 +203,11 @@ func (f *Formatter) format(w io.Writer, a RowAlign, data []string, lastRow bool)
 			padR = 0
 		}
 		// write left padding.
-		if err := f.formatColumn(w, s, padL, padR, lastCol); err != nil {
+		aw, err := f.formatColumn(w, s, padL, padR, lastCol)
+		if err != nil {
 			return err
 		}
+		updateOverwidth(aw - cw)
 	}
 	_, err := io.WriteString(w, "\n")
 	return err
