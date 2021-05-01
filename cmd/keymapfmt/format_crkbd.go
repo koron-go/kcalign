@@ -2,7 +2,8 @@ package main
 
 import "github.com/koron-go/kcalign"
 
-func crkbdFormat(ta kcalign.TextAlign) *kcalign.Formatter {
+func newFormatterCrkbd(param string) *kcalign.Formatter {
+	ta := defaultTextAlign
 	return &kcalign.Formatter{
 		Desc:  "crkbd layout",
 		Width: 10,
@@ -30,10 +31,6 @@ func crkbdFormat(ta kcalign.TextAlign) *kcalign.Formatter {
 			},
 		},
 	}
-}
-
-func newFormatterCrkbd(param string) *kcalign.Formatter {
-	return crkbdFormat(kcalign.Right)
 }
 
 func init() {

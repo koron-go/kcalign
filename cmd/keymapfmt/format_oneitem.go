@@ -2,7 +2,8 @@ package main
 
 import "github.com/koron-go/kcalign"
 
-func oneitemFormat(ta kcalign.TextAlign) *kcalign.Formatter {
+func newFormatterOneitem(param string) *kcalign.Formatter {
+	ta := defaultTextAlign
 	return &kcalign.Formatter{
 		Desc:  "one item, one line layout",
 		Width: 10,
@@ -12,10 +13,6 @@ func oneitemFormat(ta kcalign.TextAlign) *kcalign.Formatter {
 			TextAlign: ta,
 		},
 	}
-}
-
-func newFormatterOneitem(param string) *kcalign.Formatter {
-	return oneitemFormat(kcalign.Right)
 }
 
 func init() {

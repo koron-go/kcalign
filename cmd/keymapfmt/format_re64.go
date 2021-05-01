@@ -3,20 +3,21 @@ package main
 import "github.com/koron-go/kcalign"
 
 func newFormatterRe64(param string) *kcalign.Formatter {
+	ta := defaultTextAlign
 	return &kcalign.Formatter{
 		Desc:  "Re64 formatter",
 		Width: 10,
 
 		Align: kcalign.RowAlign{
 			Num:       8,
-			TextAlign: kcalign.Center,
+			TextAlign: ta,
 		},
 
 		ExAligns: map[int]kcalign.RowAlign{
 
 			0: {
 				Num:       15,
-				TextAlign: kcalign.Center,
+				TextAlign: ta,
 				ExMargins: map[int]int{
 					7: 44,
 				},
@@ -24,7 +25,7 @@ func newFormatterRe64(param string) *kcalign.Formatter {
 
 			1: {
 				Num:       14,
-				TextAlign: kcalign.Center,
+				TextAlign: ta,
 				ExMargins: map[int]int{
 					6: 42,
 				},
@@ -36,7 +37,7 @@ func newFormatterRe64(param string) *kcalign.Formatter {
 
 			2: {
 				Num:       13,
-				TextAlign: kcalign.Center,
+				TextAlign: ta,
 				ExMargins: map[int]int{
 					6: 41,
 				},
@@ -48,7 +49,7 @@ func newFormatterRe64(param string) *kcalign.Formatter {
 
 			3: {
 				Num:       13,
-				TextAlign: kcalign.Center,
+				TextAlign: ta,
 				ExMargins: map[int]int{
 					6: 42,
 				},
@@ -60,7 +61,7 @@ func newFormatterRe64(param string) *kcalign.Formatter {
 
 			4: {
 				Num:       11,
-				TextAlign: kcalign.Center,
+				TextAlign: ta,
 				ExMargins: map[int]int{
 					3: 10,
 					6: 2,

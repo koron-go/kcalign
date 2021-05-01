@@ -2,7 +2,8 @@ package main
 
 import "github.com/koron-go/kcalign"
 
-func uzu42Format(ta kcalign.TextAlign) *kcalign.Formatter {
+func newFormatterUzu42(param string) *kcalign.Formatter {
+	ta := defaultTextAlign
 	return &kcalign.Formatter{
 		Desc:  "uzu42 layout",
 		Width: 11,
@@ -22,10 +23,6 @@ func uzu42Format(ta kcalign.TextAlign) *kcalign.Formatter {
 			},
 		},
 	}
-}
-
-func newFormatterUzu42(param string) *kcalign.Formatter {
-	return uzu42Format(kcalign.Right)
 }
 
 func init() {
