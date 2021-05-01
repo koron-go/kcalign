@@ -13,7 +13,7 @@ import (
 
 const defaultLayerFormat = "@oneitem"
 
-var defaultTextAlign = kcalign.Right
+var defaultTextAlign = kcalign.Center
 
 var formatters = map[string]func(string) *kcalign.Formatter{}
 
