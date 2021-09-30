@@ -47,23 +47,45 @@ func (d dim) Get() interface{} {
 	return d
 }
 
+func writeLED(w io.Writer, l *klejson.Layout) error {
+	nled := 0
+	for nrow, row := range l.Rows {
+		for ncol, key := range row {
+			i := nled + ncol
+			if nrow%2 == 1 {
+				i = nled + len(row) - ncol - 1
+			}
+			x := key.CX*unit.x + offLED.x + origin.x
+			y := key.CY*unit.y + offLED.y + origin.y
+			_, err := fmt.Fprintf(w, "LED%d\t%f\t%f\t%f\n", i+1, x, y, rotLED)
+			if err != nil {
+				return err
+			}
+		}
+		nled += len(row)
+	}
+	return nil
+}
+
+var (
+	origin = dim{}
+	unit   = dim{x: 19.05, y: 19.05}
+
+	prefixSwitch = "SW"
+
+	enableDiode = false
+	offDiode    = dim{y: +8.33}
+	rotDiode    = 0.0
+
+	enableLED = false
+	offLED    = dim{y: -4.76}
+	rotLED    = 0.0
+	mapLED    = ""
+
+	sortBy string
+)
+
 func main() {
-	var (
-		origin = dim{}
-		unit   = dim{x: 19.05, y: 19.05}
-
-		prefixSwitch = "SW"
-
-		enableDiode = false
-		offDiode    = dim{y: +8.33}
-		rotDiode    = 0.0
-
-		enableLED = false
-		offLED    = dim{y: -4.76}
-		rotLED    = 0.0
-
-		sortBy string
-	)
 	flag.Var(&origin, "origin", "the origin coordinate")
 	flag.Var(&unit, "unit", "unit dimension in millimeter")
 	flag.StringVar(&sortBy, "sort", "col,row", "sort priority \"col,row\" or \"row,col\"")
@@ -77,6 +99,7 @@ func main() {
 	flag.BoolVar(&enableLED, "led", false, "output LEDs")
 	flag.Var(&offLED, "led_offset", "LED offset")
 	flag.Float64Var(&rotLED, "led_rotate", 0.0, "LED rotation")
+	flag.StringVar(&mapLED, "led_map", "", "map file: LED to switch")
 
 	flag.Parse()
 
@@ -112,18 +135,16 @@ func main() {
 
 	// align LEDs if required
 	if enableLED {
-		nled := 0
-		for nrow, row := range l.Rows {
-			for ncol, key := range row {
-				i := nled + ncol
-				if nrow%2 == 1 {
-					i = nled + len(row) - ncol - 1
-				}
-				x := key.CX*unit.x + offLED.x + origin.x
-				y := key.CY*unit.y + offLED.y + origin.y
-				fmt.Fprintf(w, "LED%d\t%f\t%f\t%f\n", i+1, x, y, rotLED)
+		if mapLED != "" {
+			err := writeMappedLED(w, l, keys, mapLED)
+			if err != nil {
+				log.Fatal(err)
 			}
-			nled += len(row)
+		} else {
+			err := writeLED(w, l)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 }
