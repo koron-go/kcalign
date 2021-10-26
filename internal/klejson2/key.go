@@ -51,3 +51,5 @@ type Key struct {
 	Nub     bool
 	Decal   bool
 }
+
+type Row []Key
