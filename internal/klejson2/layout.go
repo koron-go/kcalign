@@ -50,7 +50,7 @@ func Read(r io.Reader) (*Layout, error) {
 				}
 				curr = mergeProps(curr, p)
 			case string:
-				k, err := newKey(curr, v)
+				k, err := newKey(&curr, v)
 				if err != nil {
 					return nil, fmt.Errorf("invalid key at #%d,%d: %w", i, j, err)
 				}
@@ -82,7 +82,7 @@ func mergeProps(cv, nv Props) Props {
 	return nv
 }
 
-func newKey(p Props, s string) (*Key, error) {
+func newKey(p *Props, s string) (*Key, error) {
 	// TODO: create a new key
 	return nil, nil
 }
