@@ -48,7 +48,7 @@ func Read(r io.Reader) (*Layout, error) {
 				if err != nil {
 					return nil, fmt.Errorf("invalid key properties at #%d,%d: %w", i, j, err)
 				}
-				curr = mergeProps(curr, p)
+				curr.Merge(p)
 			case string:
 				k, err := newKey(&curr, v)
 				if err != nil {
@@ -75,11 +75,6 @@ func jsonReparse(in, out interface{}) error {
 		return err
 	}
 	return json.Unmarshal(b, out)
-}
-
-func mergeProps(cv, nv Props) Props {
-	// TODO: merge properties
-	return nv
 }
 
 func newKey(p *Props, s string) (*Key, error) {
