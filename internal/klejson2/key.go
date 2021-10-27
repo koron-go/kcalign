@@ -7,21 +7,7 @@ type Legend struct {
 }
 
 type Key struct {
-	TopLeft   Legend
-	TopCenter Legend
-	TopRight  Legend
-
-	CenterLeft   Legend
-	CenterCenter Legend
-	CenterRight  Legend
-
-	BottomLeft   Legend
-	BottomCenter Legend
-	BottomRight  Legend
-
-	FrontLeft   Legend
-	FrontCenter Legend
-	FrontRight  Legend
+	Legends [12]Legend
 
 	TextSize  float64
 	TextColor Color
