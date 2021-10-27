@@ -131,7 +131,7 @@ func (l *ColorList) UnmarshalJSON(b []byte) error {
 	ss := strings.Split(s[1:len(s)-1], ",")
 	cc := make(ColorList, 0, len(ss))
 	for i, t := range ss {
-		c, err := ParseColor(t)
+		c, err := ParseColor(strings.TrimSpace(t))
 		if err != nil {
 			return fmt.Errorf("failed at #%d: %w", i, err)
 		}

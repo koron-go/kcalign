@@ -2,6 +2,7 @@ package klejson2_test
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/koron-go/kcalign/internal/klejson2"
@@ -143,6 +144,69 @@ func TestColorUnmarshalJSON(t *testing.T) {
 			continue
 		}
 		if got != c.expect {
+			t.Errorf("unexpected Color: i=%d c=%+v got=%+v", i, c, got)
+			continue
+		}
+	}
+}
+
+func TestColorListMarshalJSON(t *testing.T) {
+	for i, c := range []struct {
+		color  klejson2.ColorList
+		expect string
+	}{
+		{klejson2.ColorList{
+			{R: 0x00, G: 0x00, B: 0x00},
+			{R: 0x00, G: 0x00, B: 0x00},
+			{R: 0x00, G: 0x00, B: 0x00},
+		}, `"#000000,#000000,#000000"`},
+		{klejson2.ColorList{
+			{R: 0xaa, G: 0xaa, B: 0xaa},
+			{R: 0xbb, G: 0xbb, B: 0xbb},
+			{R: 0xcc, G: 0xcc, B: 0xcc},
+		}, `"#aaaaaa,#bbbbbb,#cccccc"`},
+		{klejson2.ColorList{
+			{R: 0xff, G: 0xff, B: 0xff},
+		}, `"#ffffff"`},
+	} {
+		b, err := json.Marshal(c.color)
+		if err != nil {
+			t.Errorf("unexpected failure: i=%d c=%+v: %s", i, c, err)
+			continue
+		}
+		got := string(b)
+		if got != c.expect {
+			t.Errorf("unexpected JSON: i=%d c=%+v got=%s", i, c, got)
+		}
+	}
+}
+
+func TestColorListUnmarshalJSON(t *testing.T) {
+	for i, c := range []struct {
+		s      string
+		expect klejson2.ColorList
+	}{
+		{`"#000000"`, klejson2.ColorList{
+			{R: 0x00, G: 0x00, B: 0x00},
+		}},
+		{`"#aaaaaa,#bbbbbb,#cccccc"`, klejson2.ColorList{
+			{R: 0xaa, G: 0xaa, B: 0xaa},
+			{R: 0xbb, G: 0xbb, B: 0xbb},
+			{R: 0xcc, G: 0xcc, B: 0xcc},
+		}},
+		{`"#000000, #000000, #000000"`, klejson2.ColorList{
+			{R: 0x00, G: 0x00, B: 0x00},
+			{R: 0x00, G: 0x00, B: 0x00},
+			{R: 0x00, G: 0x00, B: 0x00},
+		}},
+	} {
+		var got klejson2.ColorList
+		err := json.Unmarshal([]byte(c.s), &got)
+		if err != nil {
+			t.Errorf("unexpected failure: i=%d c=%+v: %s", i, c, err)
+			continue
+		}
+		if !reflect.DeepEqual(got, c.expect) {
 			t.Errorf("unexpected Color: i=%d c=%+v got=%+v", i, c, got)
 			continue
 		}
