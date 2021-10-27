@@ -1,8 +1,10 @@
 package klejson2
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 )
@@ -73,23 +75,68 @@ func mustParseColor(s string) *Color {
 }
 
 func (c Color) Format() string {
-	return fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
+	bb := bytes.NewBuffer(make([]byte, 0, 7))
+	c.write(bb)
+	return bb.String()
+}
+
+func (c Color) write(w io.Writer) error {
+	_, err := fmt.Fprintf(w, "#%02x%02x%02x", c.R, c.G, c.B)
+	return err
 }
 
 func (c Color) MarshalJSON() ([]byte, error) {
-	if c.R == 0 && c.G == 0 && c.B == 0 {
-		return nil, nil
-	}
-	return []byte(c.Format()), nil
+	bb := bytes.NewBuffer(make([]byte, 0, 7+2))
+	bb.WriteRune('"')
+	c.write(bb)
+	bb.WriteRune('"')
+	return bb.Bytes(), nil
 }
 
 var _ json.Unmarshaler = (*Color)(nil)
 
 func (c *Color) UnmarshalJSON(b []byte) error {
-	v, err := ParseColor(string(b))
+	s := string(b)
+	if len(s) < 2 || !strings.HasPrefix(s, `"`) || !strings.HasSuffix(s, `"`) {
+		return fmt.Errorf("invalid format, string required: %s", s)
+	}
+	v, err := ParseColor(s[1 : len(s)-1])
 	if err != nil {
 		return err
 	}
 	*c = v
+	return nil
+}
+
+type ColorList []Color
+
+func (l ColorList) MarshalJSON() ([]byte, error) {
+	bb := bytes.NewBuffer(make([]byte, 0, len(l)*8+1))
+	bb.WriteRune('"')
+	for i, c := range l {
+		if i > 0 {
+			bb.WriteRune(',')
+		}
+		c.write(bb)
+	}
+	bb.WriteRune('"')
+	return bb.Bytes(), nil
+}
+
+func (l *ColorList) UnmarshalJSON(b []byte) error {
+	s := string(b)
+	if len(s) < 2 || !strings.HasPrefix(s, `"`) || !strings.HasSuffix(s, `"`) {
+		return fmt.Errorf("invalid format, string required: %s", s)
+	}
+	ss := strings.Split(s[1:len(s)-1], ",")
+	cc := make(ColorList, 0, len(ss))
+	for i, t := range ss {
+		c, err := ParseColor(t)
+		if err != nil {
+			return fmt.Errorf("failed at #%d: %w", i, err)
+		}
+		cc = append(cc, c)
+	}
+	*l = append(*l, cc...)
 	return nil
 }
