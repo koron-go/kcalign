@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/koron-go/kcalign"
 )
 
 func check(t *testing.T, in, out, layout string) {
@@ -37,5 +38,6 @@ func check(t *testing.T, in, out, layout string) {
 }
 
 func TestCrkbd(t *testing.T) {
+	defaultTextAlign = kcalign.Right
 	check(t, "testdata/crkbd_in.json", "testdata/crkbd_out.json", "@crkbd")
 }
