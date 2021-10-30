@@ -64,7 +64,7 @@ func Read(r io.Reader) (*Layout, error) {
 	if !ok {
 		return nil, fmt.Errorf("unexpected error, 1st element should be object but got: %T", raw[0])
 	}
-	var md Metadata
+	var md Metadata = defaultMetadata()
 	err = jsonReparse(raw0, &md)
 	if err != nil {
 		return nil, fmt.Errorf("invalid layout metadata: %w", err)
@@ -107,6 +107,8 @@ func Read(r io.Reader) (*Layout, error) {
 		if len(row) > 0 {
 			rows = append(rows, row)
 		}
+		curr.Y++
+		curr.X = curr.RotationX
 	}
 	return &Layout{
 		Metadata: md,
@@ -256,6 +258,12 @@ func newKey(tmpl Key, align int, s string) (*Key, error) {
 			continue
 		}
 		key.Legends[x].Label = labels[i]
+	}
+	for i, l := range key.Legends {
+		if l.Label == "" {
+			key.Legends[i].Size = 0
+			key.Legends[i].Color = Color{}
+		}
 	}
 	return &key, nil
 }

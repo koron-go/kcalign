@@ -47,7 +47,7 @@ var DefaultKey = Key{
 	Height2: 1,
 
 	TextSize:  3,
-	TextColor: *mustParseColor("#000000"),
+	TextColor: *MustParseColor("#000000"),
 
-	Color: *mustParseColor("#cccccc"),
+	Color: *MustParseColor("#cccccc"),
 }

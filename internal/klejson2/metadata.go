@@ -9,12 +9,19 @@ type Metadata struct {
 
 	Radii        *string `json:"radii,omitempty"`
 	SwitchMount  *string `json:"switchMount,omitempty"`
-	SwitchBround *string `json:"switchBrand,omitempty"`
+	SwitchBrand *string `json:"switchBrand,omitempty"`
 	SwitchType   *string `json:"switchType,omitempty"`
 
 	Background *interface{} `json:"background,omitempty"`
 }
 
 var DefaultMetadata = Metadata{
-	Backcolor: mustParseColor("#eeeeee"),
+	Backcolor: MustParseColor("#eeeeee"),
+}
+
+func defaultMetadata() Metadata {
+	m := DefaultMetadata
+	c := *m.Backcolor
+	m.Backcolor = &c
+	return m
 }

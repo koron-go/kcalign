@@ -66,12 +66,16 @@ func ParseColor(s string) (Color, error) {
 	return Color{R: r, G: g, B: b}, nil
 }
 
-func mustParseColor(s string) *Color {
+func MustParseColor(s string) *Color {
 	c, err := ParseColor(s)
 	if err != nil {
 		panic(err)
 	}
 	return &c
+}
+
+func (c Color) String() string {
+	return c.Format()
 }
 
 func (c Color) Format() string {
