@@ -8,11 +8,9 @@ import (
 	"strings"
 )
 
-type Row []Key
-
 type Layout struct {
 	Metadata
-	Rows []Row
+	Keys []Key
 }
 
 type Mods struct {
@@ -70,7 +68,7 @@ func Read(r io.Reader) (*Layout, error) {
 		return nil, fmt.Errorf("invalid layout metadata: %w", err)
 	}
 	// read Rows
-	var rows []Row
+	var keys []Key
 	var curr Key = DefaultKey
 	var align int = 4
 	for i, r := range raw[1:] {
@@ -78,7 +76,6 @@ func Read(r io.Reader) (*Layout, error) {
 		if !ok {
 			return nil, fmt.Errorf("non-row found at #%d: %T", i, r)
 		}
-		var row Row
 		for j, el := range list {
 			switch v := el.(type) {
 			case map[string]interface{}:
@@ -98,21 +95,18 @@ func Read(r io.Reader) (*Layout, error) {
 				if err != nil {
 					return nil, fmt.Errorf("invalid key at #%d,%d: %w", i, j, err)
 				}
-				row = append(row, *k)
+				keys = append(keys, *k)
 				resetKeyTemplate(&curr)
 			default:
 				return nil, fmt.Errorf("detect neither properties/object nor key/string at #%d,%d: %T", i, j, v)
 			}
-		}
-		if len(row) > 0 {
-			rows = append(rows, row)
 		}
 		curr.Y++
 		curr.X = curr.RotationX
 	}
 	return &Layout{
 		Metadata: md,
-		Rows:     rows,
+		Keys:     keys,
 	}, nil
 }
 

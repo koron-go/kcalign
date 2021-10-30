@@ -116,183 +116,138 @@ func testKey(v klejson2.Key) klejson2.Key {
 func TestReadRows(t *testing.T) {
 	for i, c := range []struct {
 		json string
-		want []klejson2.Row
+		want []klejson2.Key
 	}{
 		{`[{},[]]`, nil},
-		{`[{},["foo"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "foo"}},
-				}),
-			},
+		{`[{},["foo"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "foo"}},
+			}),
 		}},
 
 		// multiple keys
-		{`[{},["foo","bar"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "foo"}},
-				}),
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "bar"}},
-					X:       1,
-				}),
-			},
+		{`[{},["foo","bar"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "foo"}},
+			}),
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "bar"}},
+				X:       1,
+			}),
 		}},
-		{`[{},["foo","bar"],["baz","qux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "foo"}},
-				}),
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "bar"}},
-					X:       1,
-				}),
-			},
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "baz"}},
-					Y:       1,
-				}),
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "qux"}},
-					X:       1,
-					Y:       1,
-				}),
-			},
+		{`[{},["foo","bar"],["baz","qux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "foo"}},
+			}),
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "bar"}},
+				X:       1,
+			}),
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "baz"}},
+				Y:       1,
+			}),
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "qux"}},
+				X:       1,
+				Y:       1,
+			}),
 		}},
 
 		// postion and width: "x", "w"
-		{`[{},[{"x":0.25,"w":1.5},"foo","bar"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "foo"}},
-					Width:   1.5,
-					X:       0.25,
-				}),
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "bar"}},
-					X:       1.75,
-				}),
-			},
+		{`[{},[{"x":0.25,"w":1.5},"foo","bar"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "foo"}},
+				Width:   1.5,
+				X:       0.25,
+			}),
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "bar"}},
+				X:       1.75,
+			}),
 		}},
 
 		// alignment: "a"
-		{`[{},["foo\nbar\nbaz\nqux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{
-						0: {Label: "foo"},
-						2: {Label: "baz"},
-						6: {Label: "bar"},
-						8: {Label: "qux"},
-					},
-				}),
-			},
+		{`[{},["foo\nbar\nbaz\nqux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{
+					0: {Label: "foo"},
+					2: {Label: "baz"},
+					6: {Label: "bar"},
+					8: {Label: "qux"},
+				},
+			}),
 		}},
-		{`[{},[{"a":7},"foo\nbar\nbaz\nqux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{
-						4: {Label: "foo"},
-					},
-				}),
-			},
+		{`[{},[{"a":7},"foo\nbar\nbaz\nqux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{
+					4: {Label: "foo"},
+				},
+			}),
 		}},
 
 		// color: "c", "t"
-		{`[{},[{"c":"#aaaaaa"},"foo"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{{Label: "foo"}},
-					Color:   *klejson2.MustParseColor("#aaaaaa"),
-				}),
-			},
+		{`[{},[{"c":"#aaaaaa"},"foo"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{{Label: "foo"}},
+				Color:   *klejson2.MustParseColor("#aaaaaa"),
+			}),
 		}},
-		{`[{},[{"t":"#333333,#666666,#999999,#cccccc"},"foo\nbar\nbaz\nqux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{
-						0: {
-							Label: "foo",
-							Color: *klejson2.MustParseColor("#333333"),
-						},
-						2: {
-							Label: "baz",
-							Color: *klejson2.MustParseColor("#999999"),
-						},
-						6: {
-							Label: "bar",
-							Color: *klejson2.MustParseColor("#666666"),
-						},
-						8: {
-							Label: "qux",
-							Color: *klejson2.MustParseColor("#cccccc"),
-						},
+		{`[{},[{"t":"#333333,#666666,#999999,#cccccc"},"foo\nbar\nbaz\nqux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{
+					0: {
+						Label: "foo",
+						Color: *klejson2.MustParseColor("#333333"),
 					},
-					TextColor: *klejson2.MustParseColor("#333333"),
-				}),
-			},
+					2: {
+						Label: "baz",
+						Color: *klejson2.MustParseColor("#999999"),
+					},
+					6: {
+						Label: "bar",
+						Color: *klejson2.MustParseColor("#666666"),
+					},
+					8: {
+						Label: "qux",
+						Color: *klejson2.MustParseColor("#cccccc"),
+					},
+				},
+				TextColor: *klejson2.MustParseColor("#333333"),
+			}),
 		}},
 
 		// text size
-		{`[{},[{"fa":[1,2,0.5,1.5]},"foo\nbar\nbaz\nqux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{
-						0: {
-							Label: "foo",
-							Size:  1,
-						},
-						2: {
-							Label: "baz",
-							Size:  0.5,
-						},
-						6: {
-							Label: "bar",
-							Size:  2,
-						},
-						8: {
-							Label: "qux",
-							Size:  1.5,
-						},
-					},
-				}),
-			},
+		{`[{},[{"fa":[1,2,0.5,1.5]},"foo\nbar\nbaz\nqux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{
+					0: {Label: "foo", Size: 1},
+					2: {Label: "baz", Size: 0.5},
+					6: {Label: "bar", Size: 2},
+					8: {Label: "qux", Size: 1.5},
+				},
+			}),
 		}},
-		{`[{},[{"f2":1.5},"foo\nbar\nbaz\nqux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{
-						0: {Label: "foo"},
-						2: {
-							Label: "baz",
-							Size:  1.5,
-						},
-						6: {
-							Label: "bar",
-							Size:  1.5,
-						},
-						8: {
-							Label: "qux",
-							Size:  1.5,
-						},
-					},
-				}),
-			},
+		{`[{},[{"f2":1.5},"foo\nbar\nbaz\nqux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{
+					0: {Label: "foo"},
+					2: {Label: "baz", Size: 1.5},
+					6: {Label: "bar", Size: 1.5},
+					8: {Label: "qux", Size: 1.5},
+				},
+			}),
 		}},
-		{`[{},[{"f":1.5},"foo\nbar\nbaz\nqux"]]`, []klejson2.Row{
-			{
-				testKey(klejson2.Key{
-					Legends: [12]klejson2.Legend{
-						0: {Label: "foo"},
-						2: {Label: "baz"},
-						6: {Label: "bar"},
-						8: {Label: "qux"},
-					},
-					TextSize: 1.5,
-				}),
-			},
+		{`[{},[{"f":1.5},"foo\nbar\nbaz\nqux"]]`, []klejson2.Key{
+			testKey(klejson2.Key{
+				Legends: [12]klejson2.Legend{
+					0: {Label: "foo"},
+					2: {Label: "baz"},
+					6: {Label: "bar"},
+					8: {Label: "qux"},
+				},
+				TextSize: 1.5,
+			}),
 		}},
 	} {
 		l, err := klejson2.Read(strings.NewReader(c.json))
@@ -300,7 +255,7 @@ func TestReadRows(t *testing.T) {
 			t.Errorf("failed to read: i=%d c=%+v: %s", i, c, err)
 			continue
 		}
-		got := l.Rows
+		got := l.Keys
 		if d := cmp.Diff(c.want, got); d != "" {
 			t.Errorf("unmatch: i=%d c.json=%s -want +got\n%s", i, c.json, d)
 			continue
